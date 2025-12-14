@@ -1,7 +1,7 @@
 #include "main.h"
 
 /**
- * _strcpy - copies a string from src to dest
+ * _strcpy - copies a string
  * @dest: destination buffer
  * @src: source string
  *
@@ -9,9 +9,7 @@
  */
 char *_strcpy(char *dest, char *src)
 {
-	int i;
-
-	i = 0;
+	int i = 0;
 
 	while (src[i] != '\0')
 	{
