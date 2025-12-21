@@ -1,4 +1,4 @@
-#include <main.h>
+#include "main.h"
 
 /**
  * checker - checks the input number from n to the base
