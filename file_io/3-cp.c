@@ -7,38 +7,51 @@
 #define BUF_SIZE 1024
 
 /**
- * main - copies the content of a file to another file
- * @ac: argument count
- * @av: argument vector
- *
- * Return: 0 on success, exits on failure
+ * print_usage - prints usage message and exits
  */
-
-
 void print_usage(void)
 {
 	dprintf(2, "Usage: cp file_from file_to\n");
 	exit(97);
 }
 
+/**
+ * error_read - prints read error and exits
+ * @file: file name
+ */
 void error_read(char *file)
 {
 	dprintf(2, "Error: Can't read from file %s\n", file);
 	exit(98);
 }
 
+/**
+ * error_write - prints write error and exits
+ * @file: file name
+ */
 void error_write(char *file)
 {
 	dprintf(2, "Error: Can't write to %s\n", file);
 	exit(99);
 }
 
+/**
+ * error_close - prints close error and exits
+ * @fd: file descriptor
+ */
 void error_close(int fd)
 {
 	dprintf(2, "Error: Can't close fd %d\n", fd);
 	exit(100);
 }
 
+/**
+ * copy_file - copies content from one file to another
+ * @from: source file
+ * @to: destination file
+ *
+ * Return: 1 on success
+ */
 int copy_file(char *from, char *to)
 {
 	int fd_from, fd_to;
@@ -72,6 +85,13 @@ int copy_file(char *from, char *to)
 	return (1);
 }
 
+/**
+ * main - entry point
+ * @ac: argument count
+ * @av: argument vector
+ *
+ * Return: 0 on success
+ */
 int main(int ac, char **av)
 {
 	if (ac != 3)
