@@ -13,64 +13,71 @@
  *
  * Return: 0 on success, exits on failure
  */
-int main(int ac, char **av)
+
+
+void print_usage(void)
+{
+	dprintf(2, "Usage: cp file_from file_to\n");
+	exit(97);
+}
+
+void error_read(char *file)
+{
+	dprintf(2, "Error: Can't read from file %s\n", file);
+	exit(98);
+}
+
+void error_write(char *file)
+{
+	dprintf(2, "Error: Can't write to %s\n", file);
+	exit(99);
+}
+
+void error_close(int fd)
+{
+	dprintf(2, "Error: Can't close fd %d\n", fd);
+	exit(100);
+}
+
+int copy_file(char *from, char *to)
 {
 	int fd_from, fd_to;
 	ssize_t r, w;
-	char buf[BUF_SIZE];
+	char buffer[BUF_SIZE];
 
-	if (ac != 3)
-	{
-		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
-		exit(97);
-	}
-
-	fd_from = open(av[1], O_RDONLY);
+	fd_from = open(from, O_RDONLY);
 	if (fd_from == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", av[1]);
-		exit(98);
-	}
+		error_read(from);
 
-	fd_to = open(av[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
+	fd_to = open(to, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 	if (fd_to == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't write to %s\n", av[2]);
-		close(fd_from);
-		exit(99);
-	}
+		error_write(to);
 
-	while ((r = read(fd_from, buf, BUF_SIZE)) > 0)
+	while ((r = read(fd_from, buffer, BUF_SIZE)) > 0)
 	{
-		w = write(fd_to, buf, r);
+		w = write(fd_to, buffer, r);
 		if (w != r)
-		{
-			dprintf(STDERR_FILENO, "Error: Can't write to %s\n", av[2]);
-			close(fd_from);
-			close(fd_to);
-			exit(99);
-		}
+			error_write(to);
 	}
 
 	if (r == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", av[1]);
-		close(fd_from);
-		close(fd_to);
-		exit(98);
-	}
+		error_read(from);
 
 	if (close(fd_from) == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_from);
-		exit(100);
-	}
+		error_close(fd_from);
 
 	if (close(fd_to) == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_to);
-		exit(100);
-	}
+		error_close(fd_to);
+
+	return (1);
+}
+
+int main(int ac, char **av)
+{
+	if (ac != 3)
+		print_usage();
+
+	copy_file(av[1], av[2]);
 
 	return (0);
 }
